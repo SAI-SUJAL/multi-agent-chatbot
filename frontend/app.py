@@ -1,6 +1,7 @@
 import streamlit as st
 import requests
-API_URL = "https://legal-chatbot-india.streamlit.app"
+API_URL = "https://your-api.onrender.com"
+
 st.title("India Legal Chatbot")
 st.write("Enter your legal question below:")
 
