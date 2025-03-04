@@ -22,7 +22,10 @@ embedder = SentenceTransformer("all-MiniLM-L6-v2")
 faiss_index_path = "faiss_index.bin"
 text_mapping_path = "text_mappings.pkl"
 
-embedding_dim = 384  # Must match MiniLM model
+embedding_dim = 384 
+
+client = openai.OpenAI() 
+# Must match MiniLM model
 
 # Check if FAISS index exists
 if os.path.exists(faiss_index_path) and os.path.exists(text_mapping_path):
@@ -90,18 +93,27 @@ def query_agent(user_query, top_k=5):  # Increase top_k to get more results
 
     return results
 
-
-# Summarization Agent using Groq API
 def summarization_agent(texts):
     prompt = f"Summarize the following legal texts in simple terms:\n{texts}"
     
-    response = openai.ChatCompletion.create(
+    response = client.chat.completions.create(  # ✅ Corrected API call
         model="gpt-4o",
         messages=[{"role": "system", "content": prompt}],
         temperature=0.5
     )
 
-    return response["choices"][0]["message"]["content"]
+    return response.choices[0].message.content
+# Summarization Agent using Groq API
+# def summarization_agent(texts):
+#     prompt = f"Summarize the following legal texts in simple terms:\n{texts}"
+    
+#     response = openai.ChatCompletion.create(
+#         model="gpt-4o",
+#         messages=[{"role": "system", "content": prompt}],
+#         temperature=0.5
+#     )
+
+#     return response["choices"][0]["message"]["content"]
   
 
 # FastAPI Setup
