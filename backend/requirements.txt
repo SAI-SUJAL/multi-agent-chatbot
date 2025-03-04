@@ -1,7 +1,10 @@
 fastapi
 uvicorn
-pymupdf
-chromadb
-sentence-transformers
 openai
 requests
+numpy
+faiss-cpu
+sentence-transformers
+pymupdf
+python-dotenv
+pickle5  # For compatibility with older Python versions
