@@ -4,6 +4,7 @@ python-dotenv==1.0.1
 
 # AI and LLM Libraries
 groq==0.7.1
+phi
 phidata
 
 # Langchain and Related Libraries
