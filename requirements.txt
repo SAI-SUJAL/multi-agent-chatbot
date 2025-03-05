@@ -1,13 +1,10 @@
-# Core Python Libraries
+# Streamlit & Utilities
 streamlit
+requests
+python-dotenv
 
-
-# AI and LLM Libraries
-groq
-phi
-phidata
-
-# Langchain and Related Libraries
+# AI & LLM Libraries
+groq>=0.18.0  # Use the latest version
 langchain
 langchain-community
 langchain-core
@@ -16,18 +13,15 @@ langchain-huggingface
 # Document Processing
 pypdf2
 
-# Embedding and Vector Store
+# Embeddings & Vector Store
 sentence-transformers
 faiss-cpu
 huggingface-hub
 
-# Machine Learning and NLP
+# Machine Learning & NLP
 transformers
 torch
 
 # Optional but Recommended
 tokenizers
 accelerate
-
-# Utility Libraries
-traceback
