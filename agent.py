@@ -80,7 +80,7 @@ class LegalAssistantWorkflow:
         try:
             # Step 1: Refine Query
             refined_query_response = groq_client.chat.completions.create(
-                model="mixtral-8x7b-32768",
+                model="llama3-8b-8192",
                 messages=[
                     {"role": "system", "content": "You are an expert at refining and clarifying legal queries."},
                     {"role": "user", "content": f"Rephrase and clarify this legal query to ensure precise understanding:\n\n{query}"}
