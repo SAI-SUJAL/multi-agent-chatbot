@@ -6,7 +6,8 @@ langchain-huggingface
 # Embeddings & Vector DB
 faiss-cpu
 sentence-transformers
-
+phidata
+pypdf
 # LLM & AI
 transformers
 torch
