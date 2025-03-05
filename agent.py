@@ -9,8 +9,8 @@ from phi.llm.groq import Groq  # Updated import
 # Langchain Imports
 from langchain.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.embeddings import HuggingFaceEmbeddings
-from langchain.vectorstores import FAISS
+from langchain_community.vectorstores import FAISS
+from langchain_huggingface import HuggingFaceEmbeddings
 
 # Groq Imports
 from groq import Groq as GroqClient  # Direct Groq client import
