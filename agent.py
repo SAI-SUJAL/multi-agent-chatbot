@@ -16,19 +16,9 @@ from langchain_community.vectorstores import FAISS
 from groq import Groq as GroqClient  # Direct Groq client import
 
 # Configuration and Setup
-GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
+PDF_DIR = "backend/data"  # Consistent PDF directory
 
-# PDF Paths (replace with your actual PDF paths)
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-PDF_DIR = os.path.join(BASE_DIR, "backend/data")  # Store PDFs inside "data/" folder
-
-# Define PDF paths dynamically
-PDF_PATHS = [
-    os.path.join(PDF_DIR, "Guide_to_Litigation.pdf"),
-    os.path.join(PDF_DIR, "Legal_Compliance.pdf"),
-]
-
-# Vector Database Initialization
+# Utility Functions for Agents
 def initialize_vector_db(pdf_paths):
     """Initialize FAISS vector database from PDF documents."""
     documents = []
@@ -54,25 +44,24 @@ def initialize_vector_db(pdf_paths):
     # Create FAISS Vector Store
     return FAISS.from_documents(texts, embedding_model)
 
-# Utility Functions for Agents
-def retrieve_documents(query, vector_db):
+def retrieve_documents(query, vector_db, k=5):
     """Retrieve documents from vector database"""
     if vector_db is None:
         st.error("Vector database not initialized.")
         return "Vector database not initialized."
     
     try:
-        docs = vector_db.similarity_search(query, k=5)
+        docs = vector_db.similarity_search(query, k=k)
         return "\n\n".join([doc.page_content for doc in docs])
     except Exception as e:
         st.error(f"Error retrieving documents: {e}")
         return f"Error retrieving documents: {e}"
 
-def simplify_legal_text(text, groq_client):
+def simplify_legal_text(text, groq_client, model):
     """Simplify legal text using LLM"""
     try:
         response = groq_client.chat.completions.create(
-            model="mixtral-8x7b-32768",
+            model=model,
             messages=[
                 {"role": "system", "content": "You are a legal expert who simplifies complex legal text for a non-lawyer audience."},
                 {"role": "user", "content": f"Simplify this legal text:\n\n{text}"}
@@ -85,15 +74,16 @@ def simplify_legal_text(text, groq_client):
 
 # Multi-Agent Workflow Coordinator
 class LegalAssistantWorkflow:
-    def __init__(self, vector_db, groq_client):
+    def __init__(self, vector_db, groq_client, llm_model):
         self.vector_db = vector_db
         self.groq_client = groq_client
+        self.llm_model = llm_model
         
     def process_query(self, query):
         # Step 1: Refine Query
         try:
             refined_query_response = self.groq_client.chat.completions.create(
-                model="mixtral-8x7b-32768",
+                model=self.llm_model,
                 messages=[
                     {"role": "system", "content": "You are an expert at refining and clarifying legal queries."},
                     {"role": "user", "content": f"Rephrase and clarify this legal query to ensure precise understanding:\n\n{query}"}
@@ -105,7 +95,7 @@ class LegalAssistantWorkflow:
             retrieved_docs = retrieve_documents(refined_query, self.vector_db)
             
             # Step 3: Summarize Retrieved Documents
-            summarized_content = simplify_legal_text(retrieved_docs, self.groq_client)
+            summarized_content = simplify_legal_text(retrieved_docs, self.groq_client, self.llm_model)
             
             return {
                 "refined_query": refined_query,
@@ -125,18 +115,42 @@ def main():
     st.title("AI Legal Assistant")
     st.subheader("Advanced Legal Information Retrieval")
 
-    # API Key Input
-    GROQ_API_KEY = st.text_input("Enter your Groq API Key", type="password")
+    # Model Selection
+    available_models = [
+        "mixtral-8x7b-32768", 
+        "llama2-70b-4096", 
+        "gemma-7b-it"
+    ]
+    selected_model = st.selectbox(
+        "Select Language Model", 
+        available_models, 
+        index=0,
+        help="Choose the language model for processing your query"
+    )
 
-    if not GROQ_API_KEY:
-        st.warning("Please enter a Groq API Key to proceed.")
+    # Retrieve API Key from Streamlit Secrets
+    try:
+        groq_api_key = st.secrets["GROQ_API_KEY"]
+    except KeyError:
+        st.error("Groq API Key not found in Streamlit secrets. Please add it.")
         return
 
     # Initialize Groq Client
     try:
-        groq_client = GroqClient(api_key=GROQ_API_KEY)
+        groq_client = GroqClient(api_key=groq_api_key)
     except Exception as e:
         st.error(f"Error initializing Groq client: {e}")
+        return
+
+    # PDF Paths 
+    try:
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        PDF_PATHS = [
+            os.path.join(base_dir, PDF_DIR, "Guide_to_Litigation.pdf"),
+            os.path.join(base_dir, PDF_DIR, "Legal_Compliance.pdf"),
+        ]
+    except Exception as e:
+        st.error(f"Error finding PDF files: {e}")
         return
 
     # Vector Database Initialization
@@ -146,12 +160,13 @@ def main():
         st.error(f"Vector database could not be initialized: {e}")
         return
 
-    workflow = LegalAssistantWorkflow(vector_db, groq_client)
+    # Create Workflow with Selected Model
+    workflow = LegalAssistantWorkflow(vector_db, groq_client, selected_model)
 
     # Query Input
     query = st.text_area(
         "Enter your legal query:", 
-        height=100,
+        height=150,
         placeholder="Describe your legal question or concern..."
     )
 
