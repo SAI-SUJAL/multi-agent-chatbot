@@ -22,7 +22,7 @@ import traceback
 
 
 # Configuration and Setup
-GROQ_API_KEY = "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"
+GROQ_API_KEY = "your api key"
 if not GROQ_API_KEY:
     raise ValueError("Groq API Key must be set in .env file")
 
