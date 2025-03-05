@@ -1,28 +1,18 @@
-# Streamlit & Utilities
-streamlit
-requests
-python-dotenv
-phidata
-
-# AI & LLM Libraries
-groq>=0.18.0  # Use the latest version
+# Updated LangChain Imports
 langchain
 langchain-community
-langchain-core
 langchain-huggingface
 
-# Document Processing
-pypdf2
-
-# Embeddings & Vector Store
-sentence-transformers
+# Embeddings & Vector DB
 faiss-cpu
-huggingface-hub
+sentence-transformers
 
-# Machine Learning & NLP
+# LLM & AI
 transformers
 torch
+groq>=0.18.0
 
-# Optional but Recommended
-tokenizers
-accelerate
+# Streamlit & Utilities
+streamlit
+python-dotenv
+requests
