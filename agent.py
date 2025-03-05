@@ -115,33 +115,22 @@ def main():
     st.title("AI Legal Assistant")
     st.subheader("Advanced Legal Information Retrieval")
 
-    # Model Selection
-    available_models = [
-        "mixtral-8x7b-32768", 
-        "llama2-70b-4096", 
-        "gemma-7b-it"
-    ]
-    selected_model = st.selectbox(
-        "Select Language Model", 
-        available_models, 
-        index=0,
-        help="Choose the language model for processing your query"
-    )
+    # # Model Selection
+    # available_models = [
+    #     "mixtral-8x7b-32768", 
+    #     "llama2-70b-4096", 
+    #     "gemma-7b-it"
+    # ]
+    # selected_model = st.selectbox(
+    #     "Select Language Model", 
+    #     available_models, 
+    #     index=0,
+    #     help="Choose the language model for processing your query"
+    # )
 
     # Retrieve API Key from Streamlit Secrets
-    try:
-        groq_api_key = st.secrets["GROQ_API_KEY"]
-    except KeyError:
-        st.error("Groq API Key not found in Streamlit secrets. Please add it.")
-        return
-
-    # Initialize Groq Client
-    try:
-        groq_client = GroqClient(api_key=groq_api_key)
-    except Exception as e:
-        st.error(f"Error initializing Groq client: {e}")
-        return
-
+   
+ 
     # PDF Paths 
     try:
         base_dir = os.path.dirname(os.path.abspath(__file__))
