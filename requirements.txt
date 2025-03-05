@@ -1,33 +1,33 @@
 # Core Python Libraries
-streamlit==1.32.2
-python-dotenv==1.0.1
+streamlit
+
 
 # AI and LLM Libraries
-groq==0.7.1
+groq
 phi
 phidata
 
 # Langchain and Related Libraries
-langchain==0.2.1
-langchain-community==0.2.1
-langchain-core==0.2.1
-langchain-huggingface==0.0.3
+langchain
+langchain-community
+langchain-core
+langchain-huggingface
 
 # Document Processing
-pypdf2==3.0.1
+pypdf2
 
 # Embedding and Vector Store
-sentence-transformers==2.7.0
-faiss-cpu==1.7.4
-huggingface-hub==0.22.2
+sentence-transformers
+faiss-cpu
+huggingface-hub
 
 # Machine Learning and NLP
-transformers==4.40.1
-torch==2.2.1
+transformers
+torch
 
 # Optional but Recommended
-tokenizers==0.15.2
-accelerate==0.27.2
+tokenizers
+accelerate
 
 # Utility Libraries
 traceback
